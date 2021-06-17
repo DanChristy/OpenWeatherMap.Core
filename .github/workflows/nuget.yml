@@ -3,10 +3,10 @@ name: "Deploy to NuGet"
 on:
   push:
     branches:
-      - main
+      - 'main'
   pull_request:
     branches:
-      - main
+      - 'main'
   page_build:
   release:
     types:
