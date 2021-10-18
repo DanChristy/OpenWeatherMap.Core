@@ -29,10 +29,14 @@ new OpenWeatherMap("YOUR_ACCESS_KEY", 60);
 ## Usage
 
 ### Current Weather
+### By latitude and longitude
 ```c#            
 var currentWeatherModel = await openWeatherMap.QueryAsync<CurrentWeatherModel>(40.12, 96.66);              
 ```
-
+### By city name
+```c#            
+var currentWeatherModel = await openWeatherMap.QueryAsync<CurrentWeatherModel>("london");              
+```
 ### One Call
 ```C#
 var oneCallWeatherModel = await openWeatherMap.QueryAsync<OneCallWeatherModel>(40.12, 96.66); 
