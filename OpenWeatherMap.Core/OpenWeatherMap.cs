@@ -76,5 +76,56 @@ namespace OpenWeatherMap.Core {
 
 			return response;
 		}
+
+		public async Task<T> QueryAsync<T>(string cityName, Language language = Language.English, Units units = Units.Imperial, string version = "2.5")
+		{
+			var request = $"{cityName}{language}{units}";
+
+			dynamic response = null;
+
+			if (cache != null)
+			{
+				response = cache.Get(request);
+			}
+
+			if (response is null)
+			{
+				argumentDictionary = new Dictionary<string, string> {
+					{"appid", apiKey.ToString(CultureInfo.InvariantCulture)},
+					{"q", cityName},
+					{"lang", (language.GetType().GetMember(language.ToString()).First().GetCustomAttribute(typeof(DescriptionAttribute)) as DescriptionAttribute).Description},
+					{"units", units.ToString()}
+				};
+
+				string url;
+
+				switch (typeof(T))
+				{
+					case var currentWeatherModel when currentWeatherModel == typeof(CurrentWeatherModel):
+						url = $"{BaseUrl}/{version}/weather";
+						break;
+					case var oneCallWeatherModel when oneCallWeatherModel == typeof(OneCallWeatherModel):
+						url = $"{BaseUrl}/{version}/onecall";
+						break;
+					default:
+						url = "";
+						break;
+				}
+
+				response = await GetAsync<T>(url, argumentDictionary);
+
+				if (cache != null)
+				{
+					var policy = new CacheItemPolicy
+					{
+						AbsoluteExpiration = DateTime.Now.AddSeconds(expiration.Value)
+					};
+
+					cache.Set(request, response, policy);
+				}
+			}
+
+			return response;
+		}
 	}
 }
