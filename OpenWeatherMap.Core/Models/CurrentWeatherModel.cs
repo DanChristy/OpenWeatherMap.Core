@@ -42,5 +42,9 @@ namespace OpenWeatherMap.Core.Models {
 
 		[JsonProperty("cod")]
 		public int Cod { get; set; }
+		[JsonProperty("rain")]
+        public Rain Rain { get; set; }
+		[JsonProperty("snow")]
+		public Snow snow { get; set; }
 	}
 }
